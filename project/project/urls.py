@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url,include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^', include('stream.urls')),
+    url(r'^logout/$',auth_views.logout,name='logout'),
+    url(r'^password-change/$',auth_views.password_change,{'template_name': 'stream/password_change.html','post_change_redirect': '/'},name='password_change'),
 ]

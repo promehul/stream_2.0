@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+	{% load static %}
+	<head>
+		<title> {% block title%} Stream {% endblock %} </title>
+		<link rel="stylesheet" href="{% static 'stream/style.css' %}">
+	</head>
+
+        <body>
+           {% block content%}
+           {% endblock %}
+        </body>
+</html>	
