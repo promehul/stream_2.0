@@ -23,4 +23,4 @@ urlpatterns = [
     url(r'^', include('stream.urls')),
     url(r'^logout/$',auth_views.logout,name='logout'),
     url(r'^password-change/$',auth_views.password_change,{'template_name': 'stream/password_change.html','post_change_redirect': '/'},name='password_change'),
-]
+    ]
