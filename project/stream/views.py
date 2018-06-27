@@ -6,10 +6,13 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from  stream.serializers import UserSerializer
+from  stream.serializers import UserSerializer,SongSerializer
+
+from stream.models import Song
 # Create your views here.
 
 def home(request):
@@ -74,3 +77,13 @@ def user_detail(request, username):
 
 def check(request):
     return render(request,'stream/control.html')
+
+
+
+@api_view(['GET'])
+@permission_classes((AllowAny,))
+def song_details(request):
+    if request.method == 'GET':
+        song = Song.objects.get(id = 1)
+        serializer = SongSerializer(song)
+        return Response(serializer.data)
