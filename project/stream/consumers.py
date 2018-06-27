@@ -44,7 +44,7 @@ class StreamConsumer(AsyncWebsocketConsumer):
         )
 
     # Receive message from room group
-    async def chat_message(self, event):
+    async def stream_music(self, event):
         url = event['url']
         volume = event['volume']
         mute = event['mute']

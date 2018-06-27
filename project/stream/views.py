@@ -72,3 +72,5 @@ def user_detail(request, username):
     else:
         redirect('/')
 
+def check(request):
+    return render(request,'stream/control.html')
