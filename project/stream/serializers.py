@@ -13,3 +13,6 @@ class SongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
         fields = ('url', 'volume', 'duration', 'mute', 'seek', 'play', 'dj')
+
+class MessageSerializer(serializers.Serializer):
+    message = serializers.CharField()
