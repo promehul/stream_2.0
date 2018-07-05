@@ -3,7 +3,7 @@ export default class PlayControl extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			play: '',
+			play: true,
 		};
         this.fetchplayData = this.fetchplayData.bind(this);
          this.handleClick = this.handleClick.bind(this);
@@ -17,34 +17,33 @@ export default class PlayControl extends Component {
 })
 }
 
-handleClick = (event) =>{
+handleClick = () =>{
         var a = !this.state.play;
         var data_format =  {
             'url': "",
-            'volume': "", 
+            'volume': "",
             'duration': "",
             'seek': "",
             'play': a,
             'mute': "",
             'message': ""
         }
-   this.connection.send(JSON.stringify(data_format));
-	
-   this.setState(prevState => ({
-		      play: !prevState.play
-			          }));
- }
+this.connection.send(JSON.stringify(data_format)); 
+}
+
 componentDidMount(){
    this.fetchplayData();
    this.connection = new WebSocket('ws://localhost:8000/ws/stream/');
-  this.connection.onopen = () => {
+   this.connection.onopen = () => {
         console.log('PLAY  Socket connected')
   };    
 
   this.connection.onmessage = (e) => {
+       console.log(this.state.play) ;     
        var data = JSON.parse(e.data);
        var play = data['play'];
        (play === "") ? void(0) : this.setState({play:play});
+       console.log(this.state.play);
    };
 }
 componentWillUnmount(){
@@ -57,7 +56,7 @@ componentWillUnmount(){
          render() {
 	   return (
 		<div  id="mu" > 
-                <button onClick={this.handleClick} >{this.state.play ? "pause" : "play" } </button>  <br/>
+                <button onClick={this.handleClick}> {this.state.play ? "pause" : "play" } </button>  <br/>
                 </div>
                     );
               }
