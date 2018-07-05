@@ -11,17 +11,57 @@ export default class SearchBaro extends Component {
 		  resultyt: [],
 		  tityt: [],
 		  imgyt: [],
-		  pa: '',
+		  url: '',
 		};
-		
+		this.fetchUrlData = this.fetchUrlData.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleChange2 = this.handleChange2.bind(this);
+		this.handle = this.handle.bind(this);
 	}
 
+ fetchUrlData(){
+	      fetch('http://localhost:8000/api/song/').then(results => {
+		                return results.json();
+ }).then(data => {
+	    this.setState({ url: data['url']});
+ })
+ }
+
 handle = (id,e) =>{
-   const pa = this.state.resultyt[id];
-   this.setState({ pa: pa,
+   const url = this.state.resultyt[id];
+   this.setState({ url: url,
    });
+   
+   var data_format =  {
+            'url': url,
+            'volume': "",
+            'duration': "",
+            'seek': "",
+            'play': "",
+            'mute': "",
+            'message': ""
+        }
+this.connection.send(JSON.stringify(data_format));
+
 }
 
+handleChange2 = (e) =>{
+ const url = document.getElementById('lol2').value;
+ this.setState({ url: url,
+	    });
+
+var data_format =  {
+            'url': url,
+            'volume': "",
+            'duration': "",
+            'seek': "",
+            'play': "",
+            'mute': "",
+            'message': ""
+        }
+this.connection.send(JSON.stringify(data_format));
+
+}
 
 handleChange = (e) => {
 	 e.preventDefault();
@@ -40,28 +80,45 @@ handleChange = (e) => {
    })
  }
 
+componentDidMount(){
+   this.fetchUrlData();
+   this.connection = new WebSocket('ws://localhost:8000/ws/stream/');
+  this.connection.onopen = () => {
+        console.log('URL  Socket connected')
+  };    
+
+  this.connection.onmessage = (e) => {
+       var data = JSON.parse(e.data);
+       var url = data['url'];
+       (url === "") ? void(0) : this.setState({url:url});
+   };
+}
+
+
+componentWillUnmount(){
+    this.connection.onclose  = (e) =>{
+        console.error('URL Socket Closed Unexpectedly');
+    };
+}
+
 
         render() {
 	   	return (
         <div>
 	<input type='text' id='lol' />
 	<input type='submit' value='search' onClick={this.handleChange}/> <br />
-	
+
+	<input type='text' id='lol2' placeholder='Enter URL'/>
+	<input type='submit' value='Enter' onClick={this.handleChange2}/> <br />
+
+
 	<div onClick={(e) => this.handle(0,e)}><img src={this.state.imgyt[0]} alt="" /><p id="d0"> {this.state.tityt[0]}</p></div> <br />
         <div onClick={(e) => this.handle(1,e)}><img src={this.state.imgyt[1]} alt="" /><p id="d1"> {this.state.tityt[1]}</p></div> <br />
 	<div onClick={(e) => this.handle(2,e)}><img src={this.state.imgyt[2]} alt="" /><p id="d2"> {this.state.tityt[2]}</p></div> <br />
 	<div onClick={(e) => this.handle(3,e)}><img src={this.state.imgyt[3]} alt="" /><p id="d3"> {this.state.tityt[3]}</p></div> <br />
 	<div onClick={(e) => this.handle(4,e)}><img src={this.state.imgyt[4]} alt="" /><p id="d4"> {this.state.tityt[4]}</p></div> <br />
 
-	<ReactPlayer
-          url= {this.state.pa} 
-          className='react-player'
-          playing
-          width='100%'
-          height='100%'
-	  controls = {true}
-        /> 
-      </div>    
+	      </div>    
       );        
 }
 }
