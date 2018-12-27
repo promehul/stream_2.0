@@ -38,9 +38,9 @@ class StreamConsumer(AsyncWebsocketConsumer):
             song.duration = duration
         elif(seek):
             song.seek = seek
-        elif(play):
+        elif(play!=""):
             song.play = play
-        elif(mute):
+        elif(mute!=""):
             song.mute = mute
         else:
             pass

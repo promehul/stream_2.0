@@ -4,7 +4,7 @@ import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter } from 'react-router-redux'
 import { Provider } from 'react-redux'
 import {Route, Switch} from 'react-router'
-
+import Player from './Player';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import App from './App';
@@ -21,6 +21,7 @@ ReactDOM.render((
     <ConnectedRouter history={history}>
       <Switch>
         <Route exact path="/login/" component={Login} />
+        <Route exact path="/player/" component={Player} />
         <PrivateRoute path="/" component={App}/>
       </Switch>
     </ConnectedRouter>

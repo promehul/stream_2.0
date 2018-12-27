@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactPlayer from 'react-player';
 
 const API_KEY = 'AIzaSyCwloS7hx6u8fvT4P2SzX06lizxuMrX828';
 
@@ -36,7 +35,7 @@ handle = (id,e) =>{
             'url': url,
             'volume': "",
             'duration': "",
-            'seek': "",
+            'seek': "1",
             'play': "",
             'mute': "",
             'message': ""
@@ -106,7 +105,7 @@ componentWillUnmount(){
 	   	return (
         <div>
 	<input type='text' id='lol' />
-	<input type='submit' value='search' onClick={this.handleChange}/> <br />
+	<input type='submit' id='myBtn' value='search' onClick={this.handleChange}/> <br />
 
 	<input type='text' id='lol2' placeholder='Enter URL'/>
 	<input type='submit' value='Enter' onClick={this.handleChange2}/> <br />
@@ -118,7 +117,10 @@ componentWillUnmount(){
 	<div onClick={(e) => this.handle(3,e)}><img src={this.state.imgyt[3]} alt="" /><p id="d3"> {this.state.tityt[3]}</p></div> <br />
 	<div onClick={(e) => this.handle(4,e)}><img src={this.state.imgyt[4]} alt="" /><p id="d4"> {this.state.tityt[4]}</p></div> <br />
 
-	      </div>    
+	   
+        </div>  
+
+         
       );        
 }
 }

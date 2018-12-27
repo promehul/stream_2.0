@@ -18,16 +18,16 @@ export default class PlayControl extends Component {
 }
 
 handleClick = () =>{
-        var a = !this.state.play;
-        var data_format =  {
-            'url': "",
-            'volume': "",
-            'duration': "",
-            'seek': "",
-            'play': a,
-            'mute': "",
-            'message': ""
-        }
+  var a = !this.state.play;
+  var data_format =  {
+      'url': "",
+      'volume': "",
+      'duration': "",
+      'seek': "",
+      'play': a,
+      'mute': "",
+      'message': ""
+}
 this.connection.send(JSON.stringify(data_format)); 
 }
 
@@ -39,11 +39,9 @@ componentDidMount(){
   };    
 
   this.connection.onmessage = (e) => {
-       console.log(this.state.play) ;     
        var data = JSON.parse(e.data);
        var play = data['play'];
        (play === "") ? void(0) : this.setState({play:play});
-       console.log(this.state.play);
    };
 }
 componentWillUnmount(){
