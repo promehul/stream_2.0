@@ -1,43 +1,55 @@
 var request = require("request")
 // Route the incoming request based on type (LaunchRequest, IntentRequest,
 // etc.) The JSON body of the request is provided in the event parameter.
-exports.handler = function (event, context) {
+exports.handler = function(event, context) {
     try {
-        console.log("event.session.application.applicationId=" + event.session.application.applicationId);
+        console.log(
+            "event.session.application.applicationId=" +
+                event.session.application.applicationId
+        )
 
         /**
          * Uncomment this if statement and populate with your skill's application ID to
          * prevent someone else from configuring a skill that sends requests to this function.
          */
 
-    // if (event.session.application.applicationId !== "") {
-    //     context.fail("Invalid Application ID");
-    //  }
+        // if (event.session.application.applicationId !== "") {
+        //     context.fail("Invalid Application ID");
+        //  }
 
         if (event.session.new) {
-            onSessionStarted({requestId: event.request.requestId}, event.session);
+            onSessionStarted(
+                { requestId: event.request.requestId },
+                event.session
+            )
         }
 
         if (event.request.type === "LaunchRequest") {
-            onLaunch(event.request,
-                event.session,
-                function callback(sessionAttributes, speechletResponse) {
-                    context.succeed(buildResponse(sessionAttributes, speechletResponse));
-                });
+            onLaunch(event.request, event.session, function callback(
+                sessionAttributes,
+                speechletResponse
+            ) {
+                context.succeed(
+                    buildResponse(sessionAttributes, speechletResponse)
+                )
+            })
         } else if (event.request.type === "IntentRequest") {
-            onIntent(event.request,
-                event.session,
-                function callback(sessionAttributes, speechletResponse) {
-                    context.succeed(buildResponse(sessionAttributes, speechletResponse));
-                });
+            onIntent(event.request, event.session, function callback(
+                sessionAttributes,
+                speechletResponse
+            ) {
+                context.succeed(
+                    buildResponse(sessionAttributes, speechletResponse)
+                )
+            })
         } else if (event.request.type === "SessionEndedRequest") {
-            onSessionEnded(event.request, event.session);
-            context.succeed();
+            onSessionEnded(event.request, event.session)
+            context.succeed()
         }
     } catch (e) {
-        context.fail("Exception: " + e);
+        context.fail("Exception: " + e)
     }
-};
+}
 
 /**
  * Called when the session starts.
@@ -57,15 +69,14 @@ function onLaunch(launchRequest, session, callback) {
  * Called when the user specifies an intent for this skill.
  */
 function onIntent(intentRequest, session, callback) {
-
     var intent = intentRequest.intent
-    var intentName = intentRequest.intent.name;
+    var intentName = intentRequest.intent.name
 
     // dispatch custom intents to handlers here
     if (intentName == "GetInfoIntent") {
         handleGetInfoIntent(intent, session, callback)
     } else {
-         throw "Invalid intent"
+        throw "Invalid intent"
     }
 }
 
@@ -73,9 +84,7 @@ function onIntent(intentRequest, session, callback) {
  * Called when the user ends the session.
  * Is not called when the skill returns shouldEndSession=true.
  */
-function onSessionEnded(sessionEndedRequest, session) {
-
-}
+function onSessionEnded(sessionEndedRequest, session) {}
 
 // ------- Skill specific logic -------
 
@@ -89,89 +98,94 @@ function getWelcomeResponse(callback) {
     var shouldEndSession = false
 
     var sessionAttributes = {
-        "speechOutput" : speechOutput,
-        "repromptText" : reprompt
+        speechOutput: speechOutput,
+        repromptText: reprompt,
     }
 
-    callback(sessionAttributes, buildSpeechletResponse(header, speechOutput, reprompt, shouldEndSession))
-
+    callback(
+        sessionAttributes,
+        buildSpeechletResponse(header, speechOutput, reprompt, shouldEndSession)
+    )
 }
 
 function handleGetInfoIntent(intent, session, callback) {
-   var speechOutput = "We have an Error";
-   getJSON(function(data){
-    if (data!="ERROR"){
-        var speechOutput = data
-      }
-      callback(session.attributes, buildSpeechletResponseWithoutCard(speechOutput,"",true))
-   })
+    var speechOutput = "We have an Error"
+    getJSON(function(data) {
+        if (data != "ERROR") {
+            var speechOutput = data
+        }
+        callback(
+            session.attributes,
+            buildSpeechletResponseWithoutCard(speechOutput, "", true)
+        )
+    })
 }
 
-function url(){
+function url() {
     return "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&utf8=1&srsearch=Albert+Einstein"
 }
 
-
-function getJSON(callback){
+function getJSON(callback) {
     request.get(url(), function(error, response, body) {
         var d = JSON.parse(body)
         var result = d.query.searchinfo.totalhits
-        if( result > 0){
-            callback(result);
+        if (result > 0) {
+            callback(result)
+        } else {
+            callback("ERROR")
         }
-        else
-            {callback("ERROR");}
-
-    } )
-} 
-
+    })
+}
 
 // ------- Helper functions to build responses for Alexa -------
-
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
             type: "PlainText",
-            text: output
+            text: output,
         },
         card: {
             type: "Simple",
             title: title,
-            content: output
+            content: output,
         },
         reprompt: {
             outputSpeech: {
                 type: "PlainText",
-                text: repromptText
-            }
+                text: repromptText,
+            },
         },
-        shouldEndSession: shouldEndSession
-    };
+        shouldEndSession: shouldEndSession,
+    }
 }
 
-function buildSpeechletResponseWithoutCard(output, repromptText, shouldEndSession) {
+function buildSpeechletResponseWithoutCard(
+    output,
+    repromptText,
+    shouldEndSession
+) {
     return {
         outputSpeech: {
             type: "PlainText",
-            text: output
+            text: output,
         },
         reprompt: {
             outputSpeech: {
                 type: "PlainText",
-                text: repromptText
-            }
+                text: repromptText,
+            },
         },
-        shouldEndSession: shouldEndSession
-    };
+        shouldEndSession: shouldEndSession,
+    }
 }
 
 function buildResponse(sessionAttributes, speechletResponse) {
     return {
         version: "1.0",
         sessionAttributes: sessionAttributes,
-        response: speechletResponse
-    };
+        response: speechletResponse,
+    }
 }
 
 function capitalizeFirst(s) {
